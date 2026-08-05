@@ -1,2 +1,5 @@
 .DS_Store
 node_modules/
+runtime/
+__pycache__/
+*.py[cod]
