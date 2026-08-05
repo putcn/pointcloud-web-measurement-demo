@@ -1,42 +1,78 @@
 # PointCloud Web Measurement Demo
 
-一个无需后端构建步骤的静态 Web 示例：在浏览器加载 ASCII PLY 点云，使用鼠标交互浏览三维场景，并通过选取两点计算空间距离。点云数据不会上传到服务器；用户选择文件后仅在当前浏览器内存中解析。
+一个基于 Web 的点云查看、空间长度量测和异步 Mesh 重建示例。用户在浏览器选择 ASCII PLY 后，前端会立刻显示点云；同时文件被提交给 FastAPI 后端，后端使用 Open3D 执行 Poisson 表面重建并提供生成的 Mesh。
 
-## 功能
+> 当前 `main` 已具备后端异步重建 API。前端的任务状态面板与点云/Mesh 视图切换将在后续提交中接入该 API。
 
-- 选择本地 ASCII PLY 文件加载
-- 两份版本控制内的彩色示例点云：`room.ply` 与 `bridge.ply`
-- OrbitControls 三维旋转、平移、缩放
-- 点大小、背景、网格开关
-- 点云射线拾取、两点长度测量、可视化端点与连线
-- Docker/Nginx 静态部署
+## 当前功能
 
-## 本地运行
+- Three.js 点云浏览：旋转、平移、缩放、点大小和背景调整。
+- 点云两点距离量测。
+- ASCII PLY 本地加载与示例点云。
+- FastAPI 异步 PLY 上传、任务状态查询和 Mesh 下载接口。
+- Open3D 网格管线：体素下采样、统计离群点滤波、法线估计、Poisson 重建、低置信度区域剔除和网格简化。
 
-由于示例文件使用 `fetch` 加载，请使用 HTTP server，而非直接双击 HTML：
+## 快速启动
 
-```bash
-python3 -m http.server 8080
-# open http://localhost:8080
-```
-
-或：
+### macOS / Linux
 
 ```bash
-docker build -t pointcloud-measure-demo .
-docker run --rm -p 8080:80 pointcloud-measure-demo
+git clone https://github.com/putcn/pointcloud-web-measurement-demo.git
+cd pointcloud-web-measurement-demo
+./scripts/start.sh
 ```
 
-## 输入和单位
+脚本会创建 `.venv`、安装依赖，并启动服务。浏览器访问 [http://localhost:8000](http://localhost:8000)。
 
-当前 MVP 仅支持 **ASCII PLY**，并读取顶点 `x y z` 与可选 `red green blue` 属性。量测值会以 `scene units` 显示：若源数据坐标单位为米，则显示值即为米。生产环境应在上传侧校验文件大小/格式，并扩展 LAS/LAZ/E57 的服务端转换（例如 PDAL + PotreeConverter）。
+### Windows PowerShell
 
-## 架构演进
+```powershell
+git clone https://github.com/putcn/pointcloud-web-measurement-demo.git
+cd pointcloud-web-measurement-demo
+Set-ExecutionPolicy -Scope Process Bypass
+.\scripts\start.ps1
+```
 
-大规模 LiDAR 数据推荐采用：`Upload API → 对象存储 → PDAL/PotreeConverter 异步任务 → Potree octree tiles → 浏览器`。测量记录应保存端点三维坐标、点云版本、操作者和时间，而不应仅保存最终距离。
+### 手动启动
 
-## 技术
+需要 Python 3.11 或更高版本：
 
-- Three.js：渲染、射线拾取、轨道控制
-- 原生 ES Modules：避免打包器，使样例可直接部署
-- Docker + Nginx：静态托管
+```bash
+python3 -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+```
+
+## Docker
+
+```bash
+docker build -t pointcloud-web-measurement-demo .
+docker run --rm -p 8000:8000 pointcloud-web-measurement-demo
+```
+
+访问 [http://localhost:8000](http://localhost:8000)。容器内的上传文件和生成 Mesh 位于 `runtime/jobs`，容器删除后会被清理；生产部署应挂载持久卷或接入对象存储。
+
+## API
+
+| 方法 | 路径 | 用途 |
+|---|---|---|
+| `POST` | `/api/jobs` | 使用 multipart 字段 `file` 上传 `.ply` 并创建异步任务 |
+| `GET` | `/api/jobs/{job_id}` | 查询 `queued`、`processing`、`completed` 或 `failed` 状态 |
+| `GET` | `/api/jobs/{job_id}/mesh` | 在任务完成后下载 `mesh.ply` |
+
+上传目前限制为 100 MB，运行时文件按 job ID 隔离。服务重启后内存中的任务状态会丢失；这是示例实现，生产环境应使用数据库与持久化任务队列。
+
+## 数据与量测
+
+当前浏览器端解析器支持 **ASCII PLY** 的 `x y z` 和可选 `red green blue` 顶点属性。量测值使用源坐标单位：若点云单位为米，显示距离即为米。
+
+Mesh 是由算法推断/补全的连续表面，尤其在遮挡和稀疏区域可能产生不真实的封口；工程量测应继续吸附到原始点云，而不是仅依据重建网格。
+
+## 示例场景
+
+```bash
+python3 scripts/generate_lidar_street.py
+```
+
+该命令会生成 `samples/synthetic-lidar-street.ply`：一个包含道路、人行道、车道线、建筑立面、车辆、路灯和树木的合成 LiDAR 风格街景。它适合验证渲染、量测与网格化流程，不用于替代真实标定扫描数据。
