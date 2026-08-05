@@ -1,0 +1,20 @@
+:root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #101827; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: flex; overflow: hidden; }
+.panel { width: 320px; flex: 0 0 320px; padding: 18px; overflow-y: auto; background: #172236; border-right: 1px solid #2b3a55; }
+h1 { font-size: 20px; margin: 0 0 8px; }
+.hint, .status { color: #b7c4d7; font-size: 13px; line-height: 1.45; }
+label, button { display: block; width: 100%; margin: 10px 0; }
+button, .upload { border: 1px solid #3d85c6; border-radius: 7px; background: #1f6fb2; color: white; padding: 9px 10px; cursor: pointer; text-align: center; font-size: 14px; }
+button.secondary { background: #273449; border-color: #50627d; }
+.upload input { display: none; }
+.row { display: flex; gap: 8px; }
+.row button { width: 50%; background: #273449; border-color: #50627d; }
+.checkbox { display: flex; align-items: center; gap: 8px; }
+.checkbox input { width: auto; }
+input[type=range] { width: 100%; }
+hr { border: 0; border-top: 1px solid #2b3a55; margin: 16px 0; }
+ul { padding-left: 20px; color: #ffdc78; font-size: 13px; }
+#viewer { flex: 1; min-width: 0; }
+#viewer canvas { display: block; width: 100%; height: 100%; }
+@media (max-width: 720px) { body { display: block; overflow: auto; } .panel { width: 100%; height: auto; } #viewer { height: 65vh; } }

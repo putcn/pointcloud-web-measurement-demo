@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PointCloud Measure Demo</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <aside class="panel">
+    <h1>PointCloud Measure</h1>
+    <p class="hint">浏览器端点云加载、三维浏览与长度量测演示。</p>
+    <label class="upload">选择 ASCII PLY 文件<input id="file-input" type="file" accept=".ply" /></label>
+    <div class="row">
+      <button data-sample="room">加载房间示例</button>
+      <button data-sample="bridge">加载桥梁示例</button>
+    </div>
+    <hr />
+    <label>点大小 <input id="point-size" type="range" min="1" max="12" value="4" /></label>
+    <label>背景 <input id="background" type="color" value="#101827" /></label>
+    <label class="checkbox"><input id="grid" type="checkbox" checked /> 显示网格</label>
+    <hr />
+    <button id="measure-toggle">开始长度量测</button>
+    <button id="clear-measurements" class="secondary">清除测量</button>
+    <p id="measure-status" class="status">量测关闭。启用后依次点击两个点。</p>
+    <ul id="measurements"></ul>
+    <hr />
+    <p class="hint">操作：左键旋转，右键平移，滚轮缩放。量测点会吸附到可拾取的点云点。</p>
+  </aside>
+  <main id="viewer"></main>
+  <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.164.1/build/three.module.js","three/addons/":"https://unpkg.com/three@0.164.1/examples/jsm/"}}</script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
