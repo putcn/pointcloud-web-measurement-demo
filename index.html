@@ -15,6 +15,19 @@
       <button data-sample="room">加载房间示例</button>
       <button data-sample="bridge">加载桥梁示例</button>
     </div>
+
+    <!-- Mesh reconstruction status panel -->
+    <div id="mesh-status-panel" class="mesh-status hidden">
+      <p id="mesh-status-text">等待上传…</p>
+      <div id="mesh-progress-bar-wrap"><div id="mesh-progress-bar"></div></div>
+    </div>
+
+    <!-- View switcher -->
+    <div class="row view-switcher">
+      <button id="btn-cloud-view" class="view-btn active">点云视图</button>
+      <button id="btn-mesh-view" class="view-btn" disabled>Mesh 视图</button>
+    </div>
+
     <hr />
     <label>点大小 <input id="point-size" type="range" min="1" max="12" value="4" /></label>
     <label>背景 <input id="background" type="color" value="#101827" /></label>
@@ -26,6 +39,7 @@
     <ul id="measurements"></ul>
     <hr />
     <p class="hint">操作：左键旋转，右键平移，滚轮缩放。量测点会吸附到可拾取的点云点。</p>
+    <p class="hint mesh-note hidden" id="mesh-note">⚠ Mesh 为推断曲面，量测请切换回点云视图并吸附到原始点。</p>
   </aside>
   <main id="viewer"></main>
   <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.164.1/build/three.module.js","three/addons/":"https://unpkg.com/three@0.164.1/examples/jsm/"}}</script>

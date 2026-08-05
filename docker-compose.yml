@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - JOBS_DIR=/tmp/pointcloud_jobs
+      - CORS_ORIGINS=http://localhost:8080,http://127.0.0.1:8080
+    volumes:
+      - jobs_data:/tmp/pointcloud_jobs
+
+  frontend:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
+
+volumes:
+  jobs_data:

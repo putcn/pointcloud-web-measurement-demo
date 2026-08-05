@@ -7,9 +7,13 @@ h1 { font-size: 20px; margin: 0 0 8px; }
 label, button { display: block; width: 100%; margin: 10px 0; }
 button, .upload { border: 1px solid #3d85c6; border-radius: 7px; background: #1f6fb2; color: white; padding: 9px 10px; cursor: pointer; text-align: center; font-size: 14px; }
 button.secondary { background: #273449; border-color: #50627d; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
 .upload input { display: none; }
 .row { display: flex; gap: 8px; }
 .row button { width: 50%; background: #273449; border-color: #50627d; }
+.view-switcher { margin: 10px 0; }
+.view-btn { width: 50%; background: #273449; border-color: #50627d; }
+.view-btn.active { background: #1f6fb2; border-color: #3d85c6; }
 .checkbox { display: flex; align-items: center; gap: 8px; }
 .checkbox input { width: auto; }
 input[type=range] { width: 100%; }
@@ -17,4 +21,15 @@ hr { border: 0; border-top: 1px solid #2b3a55; margin: 16px 0; }
 ul { padding-left: 20px; color: #ffdc78; font-size: 13px; }
 #viewer { flex: 1; min-width: 0; }
 #viewer canvas { display: block; width: 100%; height: 100%; }
+
+/* Mesh status panel */
+.mesh-status { margin: 10px 0; padding: 10px 12px; background: #1a2d47; border: 1px solid #2b3a55; border-radius: 7px; font-size: 13px; color: #b7c4d7; }
+.mesh-status.status-processing { border-color: #3d85c6; color: #7bc8ff; }
+.mesh-status.status-completed { border-color: #2e7d32; color: #81c784; }
+.mesh-status.status-failed { border-color: #b71c1c; color: #ef9a9a; }
+#mesh-progress-bar-wrap { height: 5px; background: #2b3a55; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+#mesh-progress-bar { height: 100%; width: 0%; background: #3d85c6; border-radius: 3px; transition: width 0.4s ease; }
+.hidden { display: none !important; }
+.mesh-note { color: #f0ad4e; }
+
 @media (max-width: 720px) { body { display: block; overflow: auto; } .panel { width: 100%; height: auto; } #viewer { height: 65vh; } }

@@ -1,2 +1,10 @@
 .DS_Store
 node_modules/
+# Generated upload/job directories (never commit user data)
+pointcloud_jobs/
+/tmp/pointcloud_jobs/
+uploads/
+jobs/
+__pycache__/
+*.pyc
+.pytest_cache/
